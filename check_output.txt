@@ -1,0 +1,229 @@
+02:44:20 [@astrojs/netlify] Enabling sessions with Netlify Blobs
+02:44:20 [content] Syncing content
+02:44:20 [content] Synced content
+02:44:20 [types] Generated 19ms
+02:44:20 [check] Getting diagnostics for Astro files in /Users/nektieblue/Desktop/untitled folder 2/astro-starter-kmuseiten-main...
+[96msrc/components/astro/PortableText.astro[0m:[93m44[0m:[93m36[0m - [91merror[0m[90m ts(2322): [0mType '{ block: { h2: string; h3: string; h4: string; normal: string; blockquote: string; }; marks: { strong: string; em: string; underline: string; link: ({ value, children }: any) => string; }; }' is not assignable to type 'Partial<PortableTextComponents>'.
+  Types of property 'block' are incompatible.
+    Type '{ h2: string; h3: string; h4: string; normal: string; blockquote: string; }' is not assignable to type 'ComponentOrRecord<Block> | undefined'.
+      Type '{ h2: string; h3: string; h4: string; normal: string; blockquote: string; }' is not assignable to type 'Record<string, Component<Block>>'.
+        Property 'h2' is incompatible with index signature.
+          Type 'string' is not assignable to type 'Component<Block>'.
+
+[7m44[0m   <AstroPortableText value={value} components={components} />
+[7m  [0m [91m                                   ~~~~~~~~~~[0m
+[96msrc/components/astro/PortableText.astro[0m:[93m44[0m:[93m22[0m - [91merror[0m[90m ts(2322): [0mType 'unknown[]' is not assignable to type 'ArbitraryTypedObject | PortableTextBlock<PortableTextMarkDefinition, ArbitraryTypedObject | PortableTextSpan, string, string> | (ArbitraryTypedObject | PortableTextBlock<...>)[]'.
+  Type 'unknown[]' is not assignable to type '(ArbitraryTypedObject | PortableTextBlock<PortableTextMarkDefinition, ArbitraryTypedObject | PortableTextSpan, string, string>)[]'.
+    Type 'unknown' is not assignable to type 'ArbitraryTypedObject | PortableTextBlock<PortableTextMarkDefinition, ArbitraryTypedObject | PortableTextSpan, string, string>'.
+
+[7m44[0m   <AstroPortableText value={value} components={components} />
+[7m  [0m [91m                     ~~~~~[0m
+[96msrc/components/astro/PortableText.astro[0m:[93m10[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'urlFor' is declared but its value is never read.
+
+[7m10[0m import { urlFor } from '@/lib/sanity';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/react/AiAnalyst.tsx[0m:[93m14[0m:[93m47[0m - [93mwarning[0m[90m ts(6133): [0m'marketQuestion' is declared but its value is never read.
+
+[7m14[0m export default function AiAnalyst({ marketId, marketQuestion }: AiAnalystProps) {
+[7m  [0m [93m                                              ~~~~~~~~~~~~~~[0m
+[96msrc/components/react/AiAnalyst.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/AlphaAlerts.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useEffect, useRef } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/GlobalAlphaFeed.tsx[0m:[93m1[0m:[93m17[0m - [93mwarning[0m[90m ts(6133): [0m'useMemo' is declared but its value is never read.
+
+[7m1[0m import React, { useMemo, useEffect, useState } from 'react';
+[7m [0m [93m                ~~~~~~~[0m
+[96msrc/components/react/GlobalAlphaFeed.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useMemo, useEffect, useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/Leaderboard.tsx[0m:[93m3[0m:[93m11[0m - [93mwarning[0m[90m ts(6196): [0m'LeaderboardEntry' is declared but never used.
+
+[7m3[0m interface LeaderboardEntry {
+[7m [0m [93m          ~~~~~~~~~~~~~~~~[0m
+[96msrc/components/react/Leaderboard.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/MarketCard.tsx[0m:[93m129[0m:[93m72[0m - [93mwarning[0m[90m ts(6133): [0m'index' is declared but its value is never read.
+
+[7m129[0m                             {market.outcomes.slice(0, 3).map((outcome, index) => (
+[7m   [0m [93m                                                                       ~~~~~[0m
+[96msrc/components/react/MarketCard.tsx[0m:[93m7[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/react/MarketExplorer.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/MarketGrid.tsx[0m:[93m7[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/react/MarketHeatmap.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/NotificationSettings.tsx[0m:[93m19[0m:[93m12[0m - [93mwarning[0m[90m ts(6133): [0m'loading' is declared but its value is never read.
+
+[7m19[0m     const [loading, setLoading] = useState(true);
+[7m  [0m [93m           ~~~~~~~[0m
+[96msrc/components/react/NotificationSettings.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/OrderBook.tsx[0m:[93m92[0m:[93m41[0m - [93mwarning[0m[90m ts(6133): [0m'i' is declared but its value is never read.
+
+[7m92[0m                         {asks.map((ask, i) => (
+[7m  [0m [93m                                        ~[0m
+[96msrc/components/react/OrderBook.tsx[0m:[93m68[0m:[93m41[0m - [93mwarning[0m[90m ts(6133): [0m'i' is declared but its value is never read.
+
+[7m68[0m                         {bids.map((bid, i) => (
+[7m  [0m [93m                                        ~[0m
+[96msrc/components/react/OrderBook.tsx[0m:[93m39[0m:[93m56[0m - [93mwarning[0m[90m ts(6133): [0m'i' is declared but its value is never read.
+
+[7m39[0m             return liveBook.asks.slice(0, 5).map((ask, i) => ({
+[7m  [0m [93m                                                       ~[0m
+[96msrc/components/react/OrderBook.tsx[0m:[93m23[0m:[93m56[0m - [93mwarning[0m[90m ts(6133): [0m'i' is declared but its value is never read.
+
+[7m23[0m             return liveBook.bids.slice(0, 5).map((bid, i) => ({
+[7m  [0m [93m                                                       ~[0m
+[96msrc/components/react/OrderBook.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/OrderExecutor.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useEffect, useRef } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/PerformanceChart.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/PortfolioDashboard.tsx[0m:[93m8[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m8[0m import React, { useEffect, useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/PortfolioSummary.tsx[0m:[93m7[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React from 'react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/react/PositionsTable.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/PriceChart.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useMemo, useState, useEffect } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/TradingPanel.tsx[0m:[93m61[0m:[93m17[0m - [93mwarning[0m[90m ts(80007): [0m'await' has no effect on the type of this expression.
+
+[7m 61[0m                 await executeTrade({
+[7m   [0m [93m                ~~~~~~~~~~~~~~~~~~~~[0m
+[7m 62[0m                     marketId: market.id,
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m 67[0m                     price: currentPrice,
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 68[0m                 });
+[7m   [0m [93m~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/react/TradingPanel.tsx[0m:[93m21[0m:[93m58[0m - [93mwarning[0m[90m ts(6133): [0m'storeReady' is declared but its value is never read.
+
+[7m21[0m     const { balance, executeTrade, addLimitOrder, ready: storeReady } = usePortfolioStore();
+[7m  [0m [93m                                                         ~~~~~~~~~~[0m
+[96msrc/components/react/TradingPanel.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useState, useMemo } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/WalletButton.tsx[0m:[93m16[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'isPrivyConfigured' is declared but its value is never read.
+
+[7m16[0m     const isPrivyConfigured = appId && appId !== 'your-privy-app-id' && !appId.includes('...');
+[7m  [0m [93m          ~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/react/WalletButton.tsx[0m:[93m7[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m7[0m import React, { useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/components/react/WatchlistSidebar.tsx[0m:[93m1[0m:[93m8[0m - [93mwarning[0m[90m ts(6133): [0m'React' is declared but its value is never read.
+
+[7m1[0m import React, { useEffect, useState } from 'react';
+[7m [0m [93m       ~~~~~[0m
+
+[96msrc/lib/polymarket/gamma.ts[0m:[93m295[0m:[93m46[0m - [93mwarning[0m[90m ts(6133): [0m'address' is declared but its value is never read.
+
+[7m295[0m export async function getUserClosedPositions(address: string) {
+[7m   [0m [93m                                             ~~~~~~~[0m
+[96msrc/lib/polymarket/gamma.ts[0m:[93m284[0m:[93m43[0m - [93mwarning[0m[90m ts(6133): [0m'address' is declared but its value is never read.
+
+[7m284[0m export async function getUserTradeHistory(address: string) {
+[7m   [0m [93m                                          ~~~~~~~[0m
+[96msrc/lib/polymarket/gamma.ts[0m:[93m14[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'FOOTBALL_TAGS' is declared but its value is never read.
+
+[7m14[0m const FOOTBALL_TAGS = [
+[7m  [0m [93m      ~~~~~~~~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m223[0m:[93m29[0m - [93mwarning[0m[90m ts(6133): [0m'index' is declared but its value is never read.
+
+[7m223[0m           {steps.map((step, index) => (
+[7m   [0m [93m                            ~~~~~[0m
+
+[96msrc/pages/auth/login.astro[0m:[93m11[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'loginMethods' is declared but its value is never read.
+
+[7m11[0m const loginMethods = [
+[7m  [0m [93m      ~~~~~~~~~~~~[0m
+
+[96msrc/pages/market/[id].astro[0m:[93m155[0m:[93m48[0m - [93mwarning[0m[90m ts(6133): [0m'index' is declared but its value is never read.
+
+[7m155[0m                 {market.outcomes.map((outcome, index) => {
+[7m   [0m [93m                                               ~~~~~[0m
+[96msrc/pages/market/[id].astro[0m:[93m41[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'isBinary' is declared but its value is never read.
+
+[7m41[0m const isBinary = market.outcomes.length === 2 &&
+[7m  [0m [93m      ~~~~~~~~[0m
+[96msrc/pages/market/[id].astro[0m:[93m16[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'MarketCardData' is declared but its value is never read.
+
+[7m16[0m import type { MarketCardData } from '@/lib/polymarket/types';
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/markets/index.astro[0m:[93m227[0m:[93m66[0m - [93mwarning[0m[90m ts(6385): [0m'status' is deprecated.
+
+[7m227[0m       window.location.href = `/markets?league=${league}&status=${status}&sort=${newSort}`;
+[7m   [0m [93m                                                                 ~~~~~~[0m
+[96msrc/pages/markets/index.astro[0m:[93m221[0m:[93m9[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m221[0m <script define:vars={{ league, sort, status }}>
+[7m   [0m [93m        ~~~~~~~~~~~[0m
+
+Result (53 files): 
+- 2 errors
+- 0 warnings
+- 42 hints
+

@@ -1,0 +1,247 @@
+---
+/**
+ * How It Works Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Educational page explaining prediction markets and trading flow.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+
+const steps = [
+  {
+    number: '01',
+    title: 'Connect Your Wallet',
+    description: 'Sign in with Gmail via Privy (no crypto knowledge needed!) or connect your existing wallet like MetaMask or Rabby.',
+    details: [
+      'Gmail login creates a secure wallet automatically',
+      'Works on Polygon network (low fees)',
+      'Fund your account with USDC',
+    ],
+    icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+  },
+  {
+    number: '02',
+    title: 'Browse Football Markets',
+    description: 'Explore prediction markets for matches, tournaments, and player performance across all major leagues.',
+    details: [
+      'Premier League, Champions League, La Liga, and more',
+      'Match outcomes, tournament winners, player props',
+      'Filter by league, time, and market type',
+    ],
+    icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+  },
+  {
+    number: '03',
+    title: 'Buy or Sell Shares',
+    description: 'Each outcome has a price between $0 and $1 representing its probability. Buy shares if you think it will happen.',
+    details: [
+      'Prices reflect real-time probability',
+      '65¢ = market thinks 65% likely',
+      'Buy low, sell high, or hold until resolution',
+    ],
+    icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
+  },
+  {
+    number: '04',
+    title: 'Win & Withdraw',
+    description: 'When the event happens, winning shares are worth $1 each. Losing shares become worthless.',
+    details: [
+      'Instant resolution when outcome is determined',
+      'Withdraw winnings to your wallet',
+      'Cash out via any crypto exchange',
+    ],
+    icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+  },
+];
+
+const faqs = [
+  {
+    question: 'What is a prediction market?',
+    answer: 'A prediction market is a platform where you can trade on the outcome of future events. Prices reflect the crowd\'s estimated probability of each outcome. If you think the market is wrong, you can profit by buying shares.',
+  },
+  {
+    question: 'How do prices work?',
+    answer: 'Share prices range from $0.01 to $0.99, representing 1% to 99% probability. A share priced at $0.65 means the market thinks there\'s a 65% chance of that outcome. Winning shares pay out $1.00.',
+  },
+  {
+    question: 'Do I need cryptocurrency experience?',
+    answer: 'No! With Privy integration, you can sign in with your Gmail account. We handle all the blockchain complexity behind the scenes. You can fund your account with a credit card.',
+  },
+  {
+    question: 'What currencies can I use?',
+    answer: 'ScoreMarkt uses USDC, a stablecoin pegged to the US dollar. 1 USDC = $1. This runs on the Polygon network for fast, cheap transactions.',
+  },
+  {
+    question: 'How does ScoreMarkt make money?',
+    answer: 'We earn a small affiliate commission from Polymarket on trading volume. There are no hidden fees - what you see is what you get.',
+  },
+  {
+    question: 'Is this legal?',
+    answer: 'Prediction markets operate in a regulatory gray area in many jurisdictions. Users are responsible for ensuring compliance with their local laws. Some regions may be restricted.',
+  },
+];
+
+const examples = [
+  {
+    scenario: 'You think Manchester City will win the Premier League',
+    current: 'Current price: 65¢ per share',
+    buy: 'You buy 100 shares for $65',
+    ifWin: 'If City wins: Your shares are worth $100. Profit: $35 (54%)',
+    ifLose: 'If City doesn\'t win: Your shares are worth $0. Loss: $65',
+  },
+  {
+    scenario: 'You think Liverpool vs Arsenal will be a draw',
+    current: 'Current price: 28¢ per share',
+    buy: 'You buy 50 shares for $14',
+    ifWin: 'If it\'s a draw: Your shares are worth $50. Profit: $36 (257%)',
+    ifLose: 'If not a draw: Your shares are worth $0. Loss: $14',
+  },
+];
+---
+
+<BaseLayout 
+  title="How It Works" 
+  description="Learn how to trade on football prediction markets. Step-by-step guide for beginners."
+>
+  <Header />
+
+  <main class="min-h-screen">
+    <!-- Hero -->
+    <section class="py-16 md:py-24 text-center border-b border-midnight-700/50">
+      <div class="container-narrow">
+        <span class="badge badge-lime mb-4">Beginner Friendly</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">
+          How Prediction <span class="gradient-text">Markets</span> Work
+        </h1>
+        <p class="text-lg md:text-xl text-white/60 max-w-2xl mx-auto">
+          Trade on football match outcomes and earn money when you're right. 
+          No crypto experience needed—we'll show you everything.
+        </p>
+      </div>
+    </section>
+
+    <!-- Step by Step -->
+    <section class="py-16 md:py-24">
+      <div class="container-wide">
+        <div class="space-y-16 md:space-y-24">
+          {steps.map((step, index) => (
+            <div class:list={['grid md:grid-cols-2 gap-8 md:gap-16 items-center', index % 2 === 1 && 'md:grid-flow-dense']}>
+              <div class:list={[index % 2 === 1 && 'md:col-start-2']}>
+                <div class="inline-flex items-center gap-3 mb-4">
+                  <span class="text-5xl font-bold font-mono text-lime-500/30">{step.number}</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-display font-bold mb-4">{step.title}</h2>
+                <p class="text-white/60 text-lg mb-6">{step.description}</p>
+                <ul class="space-y-3">
+                  {step.details.map(detail => (
+                    <li class="flex items-start gap-3">
+                      <svg class="w-5 h-5 text-lime-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-white/70">{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div class:list={['flex items-center justify-center', index % 2 === 1 && 'md:col-start-1']}>
+                <div class="w-48 h-48 md:w-64 md:h-64 rounded-3xl bg-gradient-to-br from-lime-500/20 to-neon-cyan/10 border border-lime-500/20 flex items-center justify-center">
+                  <svg class="w-24 h-24 md:w-32 md:h-32 text-lime-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d={step.icon} />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Example Trades -->
+    <section class="py-16 md:py-24 bg-midnight-800/50">
+      <div class="container-wide">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-display font-bold mb-4">Example Trades</h2>
+          <p class="text-white/60 max-w-xl mx-auto">
+            Here's how profit and loss works in real scenarios.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          {examples.map(example => (
+            <div class="card">
+              <h3 class="font-semibold text-lg mb-4">{example.scenario}</h3>
+              
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                  <span class="text-white/70">{example.current}</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="w-2 h-2 rounded-full bg-neon-cyan"></span>
+                  <span class="text-white/70">{example.buy}</span>
+                </div>
+              </div>
+              
+              <div class="space-y-3 pt-4 border-t border-midnight-600">
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="w-2 h-2 rounded-full bg-profit mt-1.5"></span>
+                  <span class="text-profit">{example.ifWin}</span>
+                </div>
+                <div class="flex items-start gap-2 text-sm">
+                  <span class="w-2 h-2 rounded-full bg-coral mt-1.5"></span>
+                  <span class="text-coral">{example.ifLose}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-16 md:py-24">
+      <div class="container-narrow">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-display font-bold mb-4">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="space-y-4">
+          {faqs.map(faq => (
+            <details class="group card cursor-pointer">
+              <summary class="flex items-center justify-between font-medium list-none">
+                <span>{faq.question}</span>
+                <svg class="w-5 h-5 text-white/50 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <p class="mt-4 text-white/60 leading-relaxed">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-24 bg-gradient-to-br from-lime-500/10 via-transparent to-neon-cyan/10">
+      <div class="container-narrow text-center">
+        <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Ready to Start Trading?</h2>
+        <p class="text-lg text-white/60 mb-8 max-w-md mx-auto">
+          Join thousands of football fans trading on match predictions.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="btn-primary btn-lg">
+            Connect with Gmail
+          </button>
+          <a href="/markets" class="btn-outline btn-lg">
+            Browse Markets
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

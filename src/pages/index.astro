@@ -1,0 +1,275 @@
+---
+/**
+ * Home Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Landing page with hero, stats, featured markets, and how it works.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+import MarketGrid from '@/components/react/MarketGrid';
+import LoginButton from '@/components/react/LoginButton';
+import { getFeaturedMarkets } from '@/lib/polymarket/gamma';
+
+// Fetch live featured markets
+const featuredMarkets = await getFeaturedMarkets(6);
+
+// Platform stats (mock for now)
+const stats = [
+  { value: '$12.5M', label: 'Trading Volume' },
+  { value: '2,500+', label: 'Active Traders' },
+  { value: '150+', label: 'Football Markets' },
+  { value: '24/7', label: 'Trading' },
+];
+
+// How it works steps
+const steps = [
+  {
+    step: '01',
+    title: 'Connect Wallet',
+    description: 'Sign in with Gmail via Privy or connect your crypto wallet to start trading.',
+    icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+  },
+  {
+    step: '02',
+    title: 'Pick a Market',
+    description: 'Browse football markets from Premier League to Champions League and more.',
+    icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+  },
+  {
+    step: '03',
+    title: 'Place Your Trade',
+    description: 'Buy shares in your predicted outcome. Prices reflect real-time probabilities.',
+    icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
+  },
+  {
+    step: '04',
+    title: 'Win & Withdraw',
+    description: 'If your prediction is correct, redeem your shares for $1 each. Instant payouts.',
+    icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+  },
+];
+
+// Featured leagues
+const leagues = [
+  { name: 'Premier League', slug: 'premier-league', color: 'from-purple-500 to-blue-600' },
+  { name: 'Champions League', slug: 'champions-league', color: 'from-blue-500 to-indigo-600' },
+  { name: 'La Liga', slug: 'la-liga', color: 'from-orange-500 to-red-600' },
+  { name: 'Bundesliga', slug: 'bundesliga', color: 'from-red-500 to-pink-600' },
+  { name: 'Serie A', slug: 'serie-a', color: 'from-green-500 to-teal-600' },
+  { name: 'World Cup', slug: 'world-cup', color: 'from-gold to-yellow-600' },
+];
+---
+
+<BaseLayout title="ScoreMarkt" description="Trade on football match outcomes with real money. The premier prediction market for football fans.">
+  <Header />
+
+  <main class="relative">
+    <!-- Hero Section -->
+    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20">
+      <!-- Ambient Background Effects -->
+      <div class="absolute inset-0 bg-midnight-900"></div>
+      <div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-lime-500/10 rounded-full blur-[150px] animate-pulse-slow"></div>
+      <div class="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-neon-cyan/10 rounded-full blur-[150px] animate-pulse-slow"></div>
+      
+      <!-- Gradient Mesh Overlay -->
+      <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_transparent_0%,_var(--midnight-900)_100%)]"></div>
+      
+        <div class="max-w-5xl mx-auto text-center">
+          <!-- Premium Badge -->
+          <div class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-12 shadow-glow-sm">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500 shadow-glow"></span>
+            </span>
+            <span class="text-[10px] uppercase font-black tracking-[0.3em] text-white/90">STATE-OF-THE-ART TRADING TERMINAL</span>
+          </div>
+          
+          <!-- State-of-the-Art Headline -->
+          <h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-black mb-10 leading-[0.95] tracking-tighter text-white">
+            Predict the <span class="bg-gradient-to-r from-lime-400 via-white to-neon-cyan bg-clip-text text-transparent drop-shadow-glow">Future</span>
+            <br />
+            of Football
+          </h1>
+          
+          <p class="text-xl md:text-2xl text-white/40 max-w-3xl mx-auto mb-16 leading-relaxed font-medium">
+            The premier decentralized prediction market for global football. 
+            Trade on match outcomes with real-time liquidity and instant settlement.
+          </p>
+          
+          <!-- Premium CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20">
+            <a href="/markets" class="group relative px-10 py-6 rounded-2xl bg-gradient-to-r from-lime-500 to-lime-400 text-midnight-900 font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:shadow-glow hover:scale-105 active:scale-95 overflow-hidden">
+              <span class="relative z-10 flex items-center">
+                Explore Markets
+                <svg class="w-4 h-4 ml-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </span>
+            </a>
+            
+            <LoginButton client:load className="px-10 py-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-white font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:bg-white/10 hover:border-white/20 active:scale-95 group">
+              <span class="flex items-center">
+                <svg class="w-4 h-4 mr-4 text-lime-400 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                Connect Wallet
+              </span>
+            </LoginButton>
+          </div>
+
+          <!-- Alpha Discovery Carousel -->
+          <div class="relative max-w-4xl mx-auto px-4">
+            <div class="flex items-center justify-between mb-6">
+                <span class="text-[10px] font-black text-lime-400 uppercase tracking-[0.3em]">Trending Alpha Opportunities</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {featuredMarkets.slice(0, 2).map((market) => (
+                    <a href={`/market/${market.id}`} class="group flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-lime-500/30 hover:bg-white/10 transition-all duration-500 text-left">
+                        <div class="w-12 h-12 rounded-xl bg-lime-500/20 flex items-center justify-center border border-lime-500/20">
+                            <span class="text-lime-400 font-mono font-bold">{65 + (market.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 20)}%</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-white group-hover:text-lime-400 transition-colors truncate capitalize">{market.question}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] font-black text-white/20 uppercase tracking-widest">{market.volumeFormatted} VOL</span>
+                                <span class="w-1 h-1 rounded-full bg-white/10"></span>
+                                <span class="text-[9px] font-bold text-lime-500">{market.outcomes[0].name} {market.outcomes[0].priceFormatted}</span>
+                            </div>
+                        </div>
+                    </a>
+                ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-32 border-t border-white/10 pt-16">
+          {stats.map(stat => (
+            <div class="text-center group">
+              <div class="text-3xl md:text-4xl font-black font-mono text-white mb-2 group-hover:text-lime-400 transition-colors">{stat.value}</div>
+              <div class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Markets Section -->
+    <section class="section-sm relative">
+      <div class="container-wide">
+        <div class="flex items-end justify-between mb-12 border-l-4 border-lime-500 pl-8">
+          <div>
+            <h2 class="text-3xl font-display font-black text-white">Live Markets</h2>
+            <p class="text-white/40 mt-2 font-medium">Real-time prediction opportunities across global leagues</p>
+          </div>
+          <a href="/markets" class="hidden sm:flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-lime-400 transition-colors group">
+            View All Terminal
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="relative">
+          <MarketGrid markets={featuredMarkets} client:load />
+        </div>
+      </div>
+    </section>
+
+    <!-- Leagues Section -->
+    <section class="section py-32 relative overflow-hidden">
+      <div class="absolute inset-0 bg-white/[0.02] backdrop-blur-3xl"></div>
+      <div class="container-wide relative z-10">
+        <div class="text-center mb-20">
+          <h2 class="text-4xl font-display font-black text-white mb-4">Strategic Competitions</h2>
+          <p class="text-white/30 font-medium max-w-xl mx-auto uppercase tracking-[0.1em] text-sm">Select your field of expertise</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {leagues.map(league => (
+            <a
+              href={`/markets?league=${league.slug}`}
+              class="group relative p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-lime-500/40 hover:bg-white/10 transition-all duration-500 text-center overflow-hidden"
+            >
+              <div class={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${league.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-glow/20 transition-all duration-500`}>
+                <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-black uppercase tracking-[0.2em] text-white/60 group-hover:text-white transition-colors">
+                {league.name}
+              </span>
+              <!-- Hover Glow -->
+              <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-lime-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section py-32">
+      <div class="container-wide">
+        <div class="text-center mb-24">
+          <h2 class="text-4xl font-display font-black text-white mb-4">Operations Manual</h2>
+          <p class="text-white/30 font-medium max-w-xl mx-auto uppercase tracking-[0.1em] text-sm italic">
+            "High conviction trading on global football"
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {steps.map((step, index) => (
+            <div class="relative group">
+              <div class="relative z-10 p-8 rounded-3xl bg-midnight-800/50 border border-white/5 hover:border-lime-500/30 transition-all duration-500">
+                <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8 group-hover:bg-lime-500 transition-colors duration-500">
+                  <span class="text-2xl font-black text-lime-500 font-mono group-hover:text-midnight-900 transition-colors duration-500">{step.step}</span>
+                </div>
+                <h3 class="text-lg font-black uppercase tracking-widest text-white mb-4">{step.title}</h3>
+                <p class="text-sm text-white/40 leading-relaxed font-medium">{step.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-24">
+          <button class="px-12 py-6 rounded-2xl bg-white text-midnight-900 font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 hover:shadow-glow hover:bg-lime-500 active:scale-95">
+            Initialize Trading
+          </button>
+          <div class="flex items-center justify-center gap-4 mt-8 opacity-20">
+            <span class="text-[10px] font-bold uppercase tracking-widest">Polymarket Protocol</span>
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Polygon Mainnet</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="section relative overflow-hidden py-40">
+      <div class="absolute inset-0 bg-gradient-to-br from-lime-500/20 via-transparent to-neon-cyan/20 blur-[100px]"></div>
+      
+      <div class="container-narrow relative z-10 text-center">
+        <h2 class="text-5xl md:text-7xl font-display font-black text-white mb-10 tracking-tighter">
+          Ready to <span class="gradient-text">Dominate</span> the Market?
+        </h2>
+        <p class="text-xl text-white/50 max-w-2xl mx-auto mb-16 leading-relaxed font-medium">
+          Join the elite circle of football fans trading on high-fidelity match outcomes.
+          Instant liquidity. Zero friction.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-6 justify-center">
+          <LoginButton client:load className="px-12 py-6 rounded-2xl bg-lime-500 text-midnight-900 font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 hover:shadow-glow active:scale-95">
+            Connect with Gmail
+          </LoginButton>
+          <a href="/markets" class="px-12 py-6 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-md text-white font-black text-xs uppercase tracking-[0.3em] transition-all duration-500 hover:bg-white/10 active:scale-95">
+            Browse Terminal
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

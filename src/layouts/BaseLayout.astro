@@ -1,0 +1,111 @@
+---
+/**
+ * Base Layout - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Main layout wrapper with dark theme, SEO, and fonts.
+ */
+
+import '@/styles/global.css';
+import stackConfig from '../../stack.config.js';
+import PrivyProviderWrapper from '@/components/react/PrivyProvider';
+import { Toaster } from 'sonner';
+import AlphaAlerts from '@/components/react/AlphaAlerts';
+import OrderExecutor from '@/components/react/OrderExecutor';
+import { getFeaturedMarkets } from '@/lib/polymarket/gamma';
+
+const monitorMarkets = await getFeaturedMarkets(10);
+
+// Visual Editing component (only imported if Sanity is enabled)
+let VisualEditing: any = null;
+if (stackConfig.modules.sanity) {
+  const visualEditingModule = await import('@sanity/astro/visual-editing');
+  VisualEditing = visualEditingModule.VisualEditing;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = 'Trade on football match outcomes with real money. The premier prediction market for football fans.',
+  image = '/og-image.png',
+  noIndex = false,
+} = Astro.props;
+
+const fullTitle = title === 'ScoreMarkt' ? title : `${title} | ScoreMarkt`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Check if Visual Editing is enabled
+const visualEditingEnabled =
+  stackConfig.modules.sanity &&
+  import.meta.env.PUBLIC_SANITY_VISUAL_EDITING_ENABLED === 'true';
+---
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="title" content={fullTitle} />
+    <meta name="description" content={description} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={fullTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#0A0E27" />
+  </head>
+  <body class="min-h-screen bg-midnight-900 text-white overflow-x-hidden">
+    <PrivyProviderWrapper client:only="react">
+      <!-- Background mesh pattern -->
+      <div class="fixed inset-0 bg-mesh opacity-30 pointer-events-none" aria-hidden="true"></div>
+      
+      <!-- Gradient orbs for visual interest -->
+      <div class="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] bg-lime-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse duration-[10s]" aria-hidden="true"></div>
+      <div class="fixed bottom-[-20%] right-[-10%] w-[800px] h-[800px] bg-neon-cyan/5 rounded-full blur-[160px] pointer-events-none" aria-hidden="true"></div>
+      <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-indigo-500/5 rounded-full blur-[200px] pointer-events-none" aria-hidden="true"></div>
+      
+      <!-- Main content with page transition -->
+      <div class="relative z-10 page-transition">
+        <slot />
+      </div>
+
+      <Toaster client:load richColors closeButton position="bottom-right" />
+      <AlphaAlerts client:load markets={monitorMarkets} />
+      <OrderExecutor client:load markets={monitorMarkets} />
+
+      {VisualEditing && <VisualEditing enabled={visualEditingEnabled} />}
+    </PrivyProviderWrapper>
+  </body>
+</html>

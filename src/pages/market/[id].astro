@@ -1,0 +1,271 @@
+---
+/**
+ * Market Detail Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Individual market page with trading interface.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+import TradingPanel from '@/components/react/TradingPanel';
+import PriceChart from '@/components/react/PriceChart';
+import OrderBook from '@/components/react/OrderBook';
+import AiAnalyst from '@/components/react/AiAnalyst';
+import { getMarketById, getMarketsByLeague } from '@/lib/polymarket/gamma';
+import type { MarketCardData } from '@/lib/polymarket/types';
+
+// Get market ID from URL
+const { id } = Astro.params;
+
+// Fetch live market data
+const market = await getMarketById(id!);
+
+// Redirect if not found (or handle error)
+if (!market) {
+  return Astro.redirect('/404');
+}
+
+// Fetch related live markets
+const relatedMarkets = (await getMarketsByLeague(market.league || 'football'))
+  .filter(m => m.id !== market.id)
+  .slice(0, 3);
+
+// Format league name
+const formatLeague = (league?: string) => {
+  if (!league) return '';
+  return league.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+};
+
+// Determine if binary
+const isBinary = market.outcomes.length === 2 && 
+  (market.outcomes[0].name === 'Yes' || market.outcomes[0].name === 'No');
+---
+
+<BaseLayout 
+  title={market.question} 
+  description={market.description || market.question}
+>
+  <Header />
+
+  <main class="min-h-screen">
+    <!-- Breadcrumb -->
+    <div class="border-b border-midnight-700/50 py-4">
+      <div class="container-wide">
+        <nav class="flex items-center gap-2 text-sm text-white/50">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <a href="/markets" class="hover:text-white transition-colors">Markets</a>
+          {market.league && (
+            <>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+              <a href={`/markets?league=${market.league}`} class="hover:text-white transition-colors">
+                {formatLeague(market.league)}
+              </a>
+            </>
+          )}
+        </nav>
+      </div>
+    </div>
+
+    <!-- Market Content -->
+    <section class="py-8 relative overflow-hidden">
+      <!-- Ambient Glows -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-lime-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div class="container-wide relative z-10">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-8">
+            <!-- Market Header Hero -->
+            <div class="card p-8 border border-white/10 bg-midnight-800/40 backdrop-blur-md relative overflow-hidden">
+              <div class="absolute top-0 right-0 p-8 opacity-5">
+                <svg class="w-32 h-32 text-lime-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z" />
+                </svg>
+              </div>
+
+              <div class="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
+                <!-- Market Icon container with glow -->
+                <div class="relative group">
+                  <div class="absolute inset-0 bg-lime-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                  <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center relative z-10 shadow-glow-lg">
+                    <svg class="w-12 h-12 text-midnight-900" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div class="flex-1 text-center md:text-left">
+                  {market.league && (
+                    <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-lime-500/10 text-lime-400 border border-lime-500/20 mb-3 inline-block">
+                      {formatLeague(market.league)}
+                    </span>
+                  )}
+                  <div class="flex flex-col md:flex-row md:items-center gap-4">
+                    <h1 class="text-3xl md:text-4xl font-display font-extrabold text-white leading-tight">
+                      {market.question}
+                    </h1>
+                    <button 
+                      id="share-alpha"
+                      class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 hover:border-lime-500/30 transition-all duration-300 group/share"
+                    >
+                      <svg class="w-4 h-4 group-hover/share:text-lime-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                      </svg>
+                      <span class="text-xs font-bold uppercase tracking-wider">Share Alpha</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Enhanced Stats Row */}
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-10 py-6 border-t border-white/10">
+                <div>
+                  <div class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Volume</div>
+                  <div class="text-xl font-bold font-mono text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+                    {market.volumeFormatted}
+                  </div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Liquidity</div>
+                  <div class="text-xl font-bold font-mono text-white">${(parseFloat(market.liquidity) / 1000).toFixed(0)}K</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Total Traders</div>
+                  <div class="text-xl font-bold font-mono text-white">1,234</div>
+                </div>
+                <div>
+                  <div class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-1">Market Ends</div>
+                  <div class="text-xl font-bold text-white">{market.endDateFormatted}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Outcomes Display */}
+            <div class="card p-8 border border-white/10 bg-midnight-800/40 backdrop-blur-md">
+              <h3 class="text-lg font-bold font-display text-white mb-8 border-l-4 border-lime-500 pl-4">Live Probabilities</h3>
+              
+              <div class="space-y-6">
+                {market.outcomes.map((outcome, index) => {
+                  const isYes = outcome.name === 'Yes';
+                  const isNo = outcome.name === 'No';
+                  const barColor = isYes ? 'bg-gradient-to-r from-profit/40 to-profit' : isNo ? 'bg-gradient-to-r from-coral/40 to-coral' : 'bg-gradient-to-r from-lime-500/40 to-lime-500';
+                  const textColor = isYes ? 'text-profit' : isNo ? 'text-coral' : 'text-lime-400';
+                  const glowColor = isYes ? 'shadow-profit/20' : isNo ? 'shadow-coral/20' : 'shadow-lime-500/20';
+                  
+                  return (
+                    <div class="group">
+                      <div class="flex items-center justify-between mb-3">
+                        <span class="text-base font-bold text-white/80 group-hover:text-white transition-colors uppercase tracking-wide">{outcome.name}</span>
+                        <div class="flex flex-col items-end">
+                          <span class={`text-2xl font-bold font-mono ${textColor}`}>
+                            {outcome.priceFormatted}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="h-4 bg-midnight-900/50 rounded-full border border-white/5 p-0.5 overflow-hidden">
+                        <div 
+                          class={`h-full ${barColor} rounded-full transition-all duration-1000 ease-out shadow-lg ${glowColor}`}
+                          style={`width: ${outcome.price * 100}%`}
+                        >
+                          <div class="w-full h-full opacity-20 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-shimmer"></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <!-- AI Insights -->
+            <AiAnalyst market={market} client:load />
+
+            <!-- Price Chart -->
+            <PriceChart 
+              clobTokenId={market.clobTokenIds?.[0]} 
+              initialPrice={parseFloat(market.outcomePrices?.[0] || '0.5')} 
+              client:load 
+            />
+
+            <!-- Order Book -->
+            <OrderBook 
+              clobTokenId={market.clobTokenIds?.[0]} 
+              basePrice={parseFloat(market.outcomePrices?.[0] || '0.5')} 
+              client:load 
+            />
+          </div>
+
+          <!-- Sidebar - Trading Panel -->
+          <div class="lg:col-span-1">
+            <div class="lg:sticky lg:top-24 space-y-8">
+              <TradingPanel market={market} client:load />
+
+              {/* Related Markets */}
+              {relatedMarkets.length > 0 && (
+                <div class="card p-6 border border-white/10 bg-midnight-800/40 backdrop-blur-md">
+                  <h3 class="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-6">Related Markets</h3>
+                  <div class="space-y-4">
+                    {relatedMarkets.map(related => (
+                      <a 
+                        href={`/market/${related.id}`}
+                        class="group block p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-lime-500/30 hover:bg-white/10 transition-all duration-300"
+                      >
+                        <h4 class="text-sm font-bold font-display text-white/80 group-hover:text-lime-400 line-clamp-2 mb-3 leading-snug">
+                          {related.question}
+                        </h4>
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-white/40 font-mono font-bold uppercase tracking-tighter">{related.volumeFormatted} Volume</span>
+                          <span class="font-mono font-bold text-lime-400 bg-lime-400/10 px-2 py-0.5 rounded">
+                            {related.outcomes[0].priceFormatted}
+                          </span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const shareBtn = document.getElementById('share-alpha');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      const title = document.title;
+      const url = window.location.href;
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `ScoreMarkt Alpha: ${title}`,
+            text: `Check out this market intelligence on ScoreMarkt!`,
+            url: url
+          });
+        } catch (err) {
+          console.log('Error sharing:', err);
+        }
+      } else {
+        // Fallback: Copy to clipboard
+        try {
+          await navigator.clipboard.writeText(url);
+          alert('Link copied to clipboard!');
+        } catch (err) {
+          console.error('Failed to copy link:', err);
+        }
+      }
+    });
+  }
+</script>

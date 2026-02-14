@@ -1,0 +1,161 @@
+---
+/**
+ * Header Component - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Main navigation header with wallet connect placeholder.
+ */
+
+interface Props {
+  transparent?: boolean;
+}
+
+import WalletButton from '@/components/react/WalletButton';
+
+const { transparent = false } = Astro.props;
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/markets', label: 'Markets' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/leaderboard', label: 'Leaderboard' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  class:list={[
+    'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+    transparent ? 'bg-transparent' : 'glass-dark border-b border-midnight-600/50',
+  ]}
+>
+  <div class="container-wide">
+    <nav class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <!-- Logo Icon -->
+        <div class="relative w-10 h-10 flex items-center justify-center">
+          <div class="absolute inset-0 bg-lime-500 rounded-xl rotate-45 group-hover:rotate-[55deg] transition-transform duration-300"></div>
+          <svg class="relative w-6 h-6 text-midnight-900" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </div>
+        <span class="font-display font-bold text-xl text-white group-hover:text-lime-400 transition-colors">
+          ScoreMarkt
+        </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-1">
+        {navLinks.map(link => {
+          const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+          return (
+            <a
+              href={link.href}
+              class:list={[
+                'px-4 py-2 rounded-lg transition-all font-bold text-[10px] uppercase tracking-[0.2em]',
+                isActive 
+                  ? 'text-lime-400 bg-lime-500/10 shadow-[0_0_15px_rgba(191,255,0,0.1)]' 
+                  : 'text-white/40 hover:text-white hover:bg-white/5'
+              ]}
+            >
+              {link.label}
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Right Section: Status Indicator + Wallet -->
+      <div class="hidden md:flex items-center gap-6">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-midnight-700/50 border border-white/5">
+          <span class="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
+          <span class="text-[9px] font-black uppercase tracking-widest text-white/40">Market Data Live</span>
+        </div>
+
+        <WalletButton client:load />
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="md:hidden p-2 -mr-2 text-white/70 hover:text-white"
+        aria-label="Open menu"
+        data-mobile-menu-trigger
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div
+    class="md:hidden hidden fixed inset-0 bg-midnight-900 z-50"
+    data-mobile-menu
+  >
+    <div class="container-wide py-4">
+      <div class="flex items-center justify-between mb-8">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-lime-500 rounded-xl rotate-45 flex items-center justify-center">
+            <svg class="w-6 h-6 text-midnight-900 -rotate-45" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+          </div>
+          <span class="font-display font-bold text-xl text-white">ScoreMarkt</span>
+        </a>
+        <button
+          type="button"
+          class="p-2 -mr-2 text-white/70 hover:text-white"
+          aria-label="Close menu"
+          data-mobile-menu-close
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="flex flex-col gap-2">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class="text-lg font-medium text-white/80 hover:text-lime-400 py-3 px-4 rounded-xl hover:bg-midnight-800 transition-all"
+            data-mobile-link
+          >
+            {link.label}
+          </a>
+        ))}
+        
+        <div class="border-t border-midnight-700 my-4"></div>
+        
+        <WalletButton client:load className="w-full" />
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer for fixed header -->
+<div class="h-16 md:h-20"></div>
+
+<script>
+  // Mobile menu toggle
+  const trigger = document.querySelector('[data-mobile-menu-trigger]');
+  const menu = document.querySelector('[data-mobile-menu]');
+  const closeBtn = document.querySelector('[data-mobile-menu-close]');
+  const links = document.querySelectorAll('[data-mobile-link]');
+
+  function openMenu() {
+    menu?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    menu?.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+  links.forEach(link => link.addEventListener('click', closeMenu));
+</script>

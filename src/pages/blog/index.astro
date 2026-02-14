@@ -1,0 +1,224 @@
+---
+/**
+ * Blog Index Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Football analysis, betting tips, and market insights.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+
+// Mock blog posts
+const posts = [
+  {
+    id: '1',
+    title: 'Champions League Quarter-Finals: Betting Market Analysis',
+    excerpt: 'Deep dive into the current odds and value opportunities for the upcoming UCL quarter-final matchups.',
+    category: 'Analysis',
+    author: 'Alex Johnson',
+    date: '2025-01-15',
+    readTime: '8 min',
+    image: null,
+    slug: 'ucl-quarter-finals-analysis',
+    featured: true,
+  },
+  {
+    id: '2',
+    title: 'How to Read Prediction Market Odds',
+    excerpt: 'A beginner\'s guide to understanding probability pricing and finding value in football prediction markets.',
+    category: 'Guide',
+    author: 'Sarah Chen',
+    date: '2025-01-12',
+    readTime: '5 min',
+    image: null,
+    slug: 'how-to-read-odds',
+    featured: false,
+  },
+  {
+    id: '3',
+    title: 'Premier League Title Race: Who Has the Edge?',
+    excerpt: 'Comparing the current market prices for the Premier League title with underlying performance metrics.',
+    category: 'Analysis',
+    author: 'Michael Roberts',
+    date: '2025-01-10',
+    readTime: '6 min',
+    image: null,
+    slug: 'premier-league-title-race',
+    featured: false,
+  },
+  {
+    id: '4',
+    title: 'Understanding Polymarket: A Complete Walkthrough',
+    excerpt: 'Everything you need to know about trading on Polymarket via ScoreMarkt, from wallet setup to placing your first trade.',
+    category: 'Guide',
+    author: 'Alex Johnson',
+    date: '2025-01-08',
+    readTime: '12 min',
+    image: null,
+    slug: 'polymarket-walkthrough',
+    featured: false,
+  },
+  {
+    id: '5',
+    title: 'La Liga Predictions: Barcelona vs Real Madrid Markets',
+    excerpt: 'El Clásico approaches - here\'s what the prediction markets are saying about the title race.',
+    category: 'Analysis',
+    author: 'Diego Martinez',
+    date: '2025-01-05',
+    readTime: '7 min',
+    image: null,
+    slug: 'la-liga-predictions',
+    featured: false,
+  },
+];
+
+const categories = ['All', 'Analysis', 'Guide', 'News', 'Tips'];
+const featuredPost = posts.find(p => p.featured);
+const regularPosts = posts.filter(p => !p.featured);
+---
+
+<BaseLayout 
+  title="Blog" 
+  description="Football prediction market analysis, betting guides, and expert insights."
+>
+  <Header />
+
+  <main class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="py-12 border-b border-midnight-700/50">
+      <div class="container-wide">
+        <div class="max-w-2xl">
+          <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">Blog</h1>
+          <p class="text-lg text-white/60">
+            Expert analysis, market insights, and guides for football prediction market trading.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Post -->
+    {featuredPost && (
+      <section class="py-12 border-b border-midnight-700/50">
+        <div class="container-wide">
+          <a 
+            href={`/blog/${featuredPost.slug}`}
+            class="group block card-hover p-0 overflow-hidden"
+          >
+            <div class="grid md:grid-cols-2 gap-0">
+              <div class="aspect-video md:aspect-auto bg-gradient-to-br from-lime-500/20 to-neon-cyan/20 flex items-center justify-center">
+                <svg class="w-24 h-24 text-lime-500/30" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+              </div>
+              <div class="p-8 flex flex-col justify-center">
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="badge badge-lime">Featured</span>
+                  <span class="badge bg-midnight-600 text-white/70">{featuredPost.category}</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-display font-bold mb-3 group-hover:text-lime-400 transition-colors">
+                  {featuredPost.title}
+                </h2>
+                <p class="text-white/60 mb-6 line-clamp-2">{featuredPost.excerpt}</p>
+                <div class="flex items-center gap-4 text-sm text-white/50">
+                  <span>{featuredPost.author}</span>
+                  <span>•</span>
+                  <span>{featuredPost.date}</span>
+                  <span>•</span>
+                  <span>{featuredPost.readTime} read</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- Categories & Posts -->
+    <section class="py-12">
+      <div class="container-wide">
+        {/* Category Filters */}
+        <div class="flex gap-2 mb-8 overflow-x-auto hide-scrollbar pb-2">
+          {categories.map((cat, index) => (
+            <button
+              class:list={[
+                'px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
+                index === 0 
+                  ? 'bg-lime-500/10 text-lime-400 border border-lime-500/30' 
+                  : 'bg-midnight-800 text-white/60 hover:text-white border border-midnight-600'
+              ]}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Post Grid */}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {regularPosts.map(post => (
+            <a 
+              href={`/blog/${post.slug}`}
+              class="group card-hover"
+            >
+              <div class="aspect-video bg-gradient-to-br from-midnight-600 to-midnight-700 rounded-xl mb-4 flex items-center justify-center">
+                <svg class="w-12 h-12 text-white/10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+              </div>
+              
+              <span class="badge bg-midnight-600 text-white/70 text-xs mb-3">
+                {post.category}
+              </span>
+              
+              <h3 class="text-lg font-semibold mb-2 group-hover:text-lime-400 transition-colors line-clamp-2">
+                {post.title}
+              </h3>
+              
+              <p class="text-sm text-white/50 mb-4 line-clamp-2">
+                {post.excerpt}
+              </p>
+              
+              <div class="flex items-center gap-2 text-xs text-white/40">
+                <span>{post.author}</span>
+                <span>•</span>
+                <span>{post.readTime}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* Load More */}
+        <div class="text-center mt-12">
+          <button class="btn-secondary">
+            Load More Articles
+          </button>
+        </div>
+      </div>
+    </section>
+
+    {/* Newsletter CTA */}
+    <section class="py-16 bg-midnight-800/50">
+      <div class="container-narrow text-center">
+        <h2 class="text-2xl md:text-3xl font-display font-bold mb-4">
+          Get Market Insights Weekly
+        </h2>
+        <p class="text-white/60 mb-8 max-w-md mx-auto">
+          Join 5,000+ traders receiving our weekly analysis of football prediction markets.
+        </p>
+        <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            class="input flex-1"
+          />
+          <button type="submit" class="btn-primary whitespace-nowrap">
+            Subscribe
+          </button>
+        </form>
+        <p class="text-xs text-white/30 mt-4">No spam. Unsubscribe anytime.</p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

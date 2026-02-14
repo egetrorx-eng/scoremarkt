@@ -1,0 +1,80 @@
+---
+/**
+ * Leaderboard Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Global rankings for simulation traders and analysts.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+import Leaderboard from '@/components/react/Leaderboard';
+import MarketHeatmap from '@/components/react/MarketHeatmap';
+import SocialTape from '@/components/react/SocialTape';
+import { getFeaturedMarkets } from '@/lib/polymarket/gamma';
+
+// Fetch markets for the global pulse heatmap
+const markets = await getFeaturedMarkets(20);
+---
+
+<BaseLayout 
+  title="Alpha Leaderboard | ScoreMarkt" 
+  description="See the top-performing analysts and traders on the ScoreMarkt simulation terminal."
+>
+  <Header />
+
+  <main class="min-h-screen py-12 relative overflow-hidden">
+    <!-- Ambient Background Effects -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-lime-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    
+    <div class="container-wide relative z-10">
+      <div class="mb-12 border-l-4 border-lime-500 pl-8">
+        <h1 class="text-4xl md:text-5xl font-display font-black text-white">Elite Terminal <span class="text-lime-400">Rankings</span></h1>
+        <p class="text-white/40 mt-3 text-lg font-medium max-w-2xl">
+          Tracking the most accurate prediction analysts across global football markets. 
+          Real-time performance metrics powered by the Alpha Terminal.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Main Leaderboard -->
+        <div class="lg:col-span-2">
+          <Leaderboard client:load />
+        </div>
+
+        <!-- Sidebar / Global Pulse -->
+        <div class="space-y-8">
+          <div class="card p-8 border border-white/10 bg-midnight-800/40 backdrop-blur-md">
+            <h3 class="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-6 italic">Terminal Mission</h3>
+            <p class="text-sm text-white/50 leading-relaxed font-medium mb-6">
+              The Alpha Leaderboard recognizes verified simulation accuracy. Rankings are calculated based on 
+              <span class="text-white">Total PnL</span>, <span class="text-white">Win Rate</span>, and <span class="text-white">Market Conviction</span>.
+            </p>
+            <div class="pt-6 border-t border-white/10">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-2 h-2 rounded-full bg-lime-500 shadow-glow"></div>
+                    <span class="text-[10px] font-bold text-white uppercase tracking-widest">Next Payout: 14h 22m</span>
+                </div>
+            </div>
+          </div>
+
+          <div class="card p-0 border border-white/10 bg-midnight-800/40 backdrop-blur-md overflow-hidden">
+            <div class="p-8 pb-4">
+                <h3 class="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Live Alpha Feed</h3>
+            </div>
+            <SocialTape client:load />
+          </div>
+
+          <div class="card p-0 border border-white/10 bg-midnight-800/40 backdrop-blur-md overflow-hidden">
+            <div class="p-8 pb-4">
+                <h3 class="text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Global Alpha Pulse</h3>
+            </div>
+            <MarketHeatmap markets={markets} client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,140 @@
+---
+/**
+ * Privacy Policy - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+
+const lastUpdated = 'January 15, 2025';
+---
+
+<BaseLayout 
+  title="Privacy Policy" 
+  description="ScoreMarkt privacy policy - how we handle your data."
+>
+  <Header />
+
+  <main class="min-h-screen py-12 md:py-20">
+    <div class="container-narrow">
+      <div class="prose prose-invert max-w-none">
+        <h1>Privacy Policy</h1>
+        <p class="text-white/50 text-sm">Last updated: {lastUpdated}</p>
+
+        <h2>1. Information We Collect</h2>
+        
+        <h3>Wallet Information</h3>
+        <p>
+          When you connect a wallet, we access your public wallet address. We do not have access to 
+          your private keys or seed phrases.
+        </p>
+
+        <h3>Account Information</h3>
+        <p>
+          If you sign in with Gmail via Privy, we receive your email address. Privy handles 
+          authentication securely and we only store your email for account identification.
+        </p>
+
+        <h3>Usage Data</h3>
+        <p>We may collect:</p>
+        <ul>
+          <li>Pages visited and features used</li>
+          <li>Device and browser information</li>
+          <li>IP address (for security and geo-restriction)</li>
+          <li>Trading activity (public blockchain data)</li>
+        </ul>
+
+        <h2>2. How We Use Information</h2>
+        <ul>
+          <li>Provide and improve the Service</li>
+          <li>Personalize your experience (favorites, preferences)</li>
+          <li>Send notifications you've opted into</li>
+          <li>Detect and prevent fraud</li>
+          <li>Comply with legal obligations</li>
+        </ul>
+
+        <h2>3. Information Sharing</h2>
+        <p>We do not sell your personal information. We may share data with:</p>
+        <ul>
+          <li><strong>Service providers:</strong> Privy (authentication), analytics tools</li>
+          <li><strong>Blockchain:</strong> Trading data is publicly visible on Polygon</li>
+          <li><strong>Legal:</strong> When required by law or to protect rights</li>
+        </ul>
+
+        <h2>4. Blockchain Data</h2>
+        <p>
+          All trades are recorded on the Polygon blockchain and are publicly visible. 
+          This includes your wallet address and trading history. This data cannot be deleted 
+          as it is part of the permanent blockchain record.
+        </p>
+
+        <h2>5. Cookies & Tracking</h2>
+        <p>We use:</p>
+        <ul>
+          <li><strong>Essential cookies:</strong> For authentication and preferences</li>
+          <li><strong>Analytics:</strong> Anonymous usage statistics to improve the Service</li>
+        </ul>
+        <p>You can disable cookies in your browser, but some features may not work properly.</p>
+
+        <h2>6. Data Retention</h2>
+        <p>
+          We retain account data while your account is active. You can request deletion 
+          of off-chain data by contacting us. Blockchain data cannot be deleted.
+        </p>
+
+        <h2>7. Security</h2>
+        <p>
+          We implement industry-standard security measures. However, no system is 100% secure. 
+          You are responsible for protecting your wallet credentials.
+        </p>
+
+        <h2>8. Your Rights</h2>
+        <p>Depending on your jurisdiction, you may have the right to:</p>
+        <ul>
+          <li>Access your personal data</li>
+          <li>Correct inaccurate data</li>
+          <li>Request deletion of off-chain data</li>
+          <li>Object to processing</li>
+          <li>Data portability</li>
+        </ul>
+
+        <h2>9. International Users</h2>
+        <p>
+          Data may be processed in different countries. By using the Service, you consent 
+          to data transfer to countries that may have different privacy laws.
+        </p>
+
+        <h2>10. Children's Privacy</h2>
+        <p>
+          The Service is not intended for users under 18. We do not knowingly collect 
+          data from children.
+        </p>
+
+        <h2>11. Changes to This Policy</h2>
+        <p>
+          We may update this policy. Material changes will be notified via the Service 
+          or email.
+        </p>
+
+        <h2>12. Contact Us</h2>
+        <p>
+          Privacy questions? Contact <a href="mailto:privacy@scoremarkt.com">privacy@scoremarkt.com</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .prose h1 { @apply text-4xl font-display font-bold mb-8 text-white; }
+  .prose h2 { @apply text-xl font-semibold mt-10 mb-4 text-white; }
+  .prose h3 { @apply text-lg font-medium mt-6 mb-2 text-white/90; }
+  .prose p { @apply text-white/70 leading-relaxed mb-4; }
+  .prose ul { @apply list-disc pl-6 space-y-2 text-white/70 mb-4; }
+  .prose a { @apply text-lime-400 hover:underline; }
+  .prose strong { @apply text-white font-semibold; }
+</style>

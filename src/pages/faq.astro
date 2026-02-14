@@ -1,0 +1,162 @@
+---
+/**
+ * FAQ Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Frequently asked questions about the platform.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+
+const categories = [
+  {
+    name: 'Getting Started',
+    faqs: [
+      {
+        q: 'What is ScoreMarkt?',
+        a: 'ScoreMarkt is a football-focused prediction market platform powered by Polymarket. You can trade on match outcomes, tournament winners, and player performance using real money (USDC).',
+      },
+      {
+        q: 'Do I need cryptocurrency experience?',
+        a: 'No! You can sign in with Gmail using Privy, which creates a wallet for you automatically. We handle all the crypto complexity behind the scenes.',
+      },
+      {
+        q: 'How do I get started?',
+        a: 'Click "Connect" to sign in with Gmail or your wallet. Fund your account with USDC, then browse markets and place your first trade!',
+      },
+      {
+        q: 'What currencies are accepted?',
+        a: 'ScoreMarkt uses USDC, a stablecoin where 1 USDC = $1 USD. You can buy USDC through the platform or transfer from an exchange.',
+      },
+    ],
+  },
+  {
+    name: 'Trading',
+    faqs: [
+      {
+        q: 'How do prediction markets work?',
+        a: 'Each outcome has a price between $0.01 and $0.99 representing its probability. If you think an outcome is underpriced, you buy shares. Winning shares pay $1.00 each.',
+      },
+      {
+        q: 'What happens when a market resolves?',
+        a: 'When the event happens (e.g., a match ends), the correct outcome is determined. Shares of the winning outcome become worth $1.00. Losing shares become worth $0.',
+      },
+      {
+        q: 'Can I sell before a market resolves?',
+        a: 'Yes! You can sell your shares anytime at the current market price. This lets you lock in profits or cut losses without waiting for resolution.',
+      },
+      {
+        q: 'What are the fees?',
+        a: 'There are no trading fees on ScoreMarkt. You only pay small network fees (usually a few cents) for Polygon transactions.',
+      },
+    ],
+  },
+  {
+    name: 'Deposits & Withdrawals',
+    faqs: [
+      {
+        q: 'How do I deposit funds?',
+        a: 'You can deposit USDC directly from your wallet or buy it through our integrated on-ramp using a credit card or bank transfer.',
+      },
+      {
+        q: 'How long do withdrawals take?',
+        a: 'Withdrawals are instant! Once you withdraw, the USDC goes directly to your wallet. You can then transfer to an exchange to convert to fiat.',
+      },
+      {
+        q: 'Is there a minimum deposit?',
+        a: 'There\'s no minimum deposit. You can start trading with as little as $1 worth of USDC.',
+      },
+    ],
+  },
+  {
+    name: 'Security & Legal',
+    faqs: [
+      {
+        q: 'Is ScoreMarkt safe?',
+        a: 'ScoreMarkt is powered by Polymarket, which uses non-custodial smart contracts. Your funds are never held by ScoreMarkt - you maintain full control through your wallet.',
+      },
+      {
+        q: 'Is prediction market trading legal?',
+        a: 'Prediction markets operate in a regulatory gray area in many jurisdictions. Users are responsible for complying with their local laws. Some regions may be restricted.',
+      },
+      {
+        q: 'How are markets resolved?',
+        a: 'Markets are resolved by Polymarket using verifiable data sources. For football matches, this includes official league results and statistics.',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout 
+  title="FAQ" 
+  description="Frequently asked questions about trading on ScoreMarkt football prediction markets."
+>
+  <Header />
+
+  <main class="min-h-screen py-12 md:py-20">
+    <div class="container-narrow">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
+          Frequently Asked Questions
+        </h1>
+        <p class="text-lg text-white/60">
+          Everything you need to know about trading on ScoreMarkt
+        </p>
+      </div>
+
+      {/* Quick Links */}
+      <div class="flex flex-wrap gap-2 justify-center mb-12">
+        {categories.map(cat => (
+          <a 
+            href={`#${cat.name.toLowerCase().replace(' ', '-')}`}
+            class="px-4 py-2 rounded-lg bg-midnight-800 border border-midnight-600 text-sm text-white/70 hover:text-lime-400 hover:border-lime-500/30 transition-all"
+          >
+            {cat.name}
+          </a>
+        ))}
+      </div>
+
+      {/* FAQ Sections */}
+      <div class="space-y-12">
+        {categories.map(category => (
+          <section id={category.name.toLowerCase().replace(' ', '-')}>
+            <h2 class="text-2xl font-display font-bold mb-6 pb-4 border-b border-midnight-700">
+              {category.name}
+            </h2>
+            <div class="space-y-4">
+              {category.faqs.map(faq => (
+                <details class="group card cursor-pointer">
+                  <summary class="flex items-center justify-between font-medium list-none">
+                    <span class="pr-4">{faq.q}</span>
+                    <svg class="w-5 h-5 text-white/50 flex-shrink-0 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </summary>
+                  <p class="mt-4 text-white/60 leading-relaxed">{faq.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {/* Contact CTA */}
+      <div class="mt-16 text-center p-8 rounded-2xl bg-midnight-800 border border-midnight-600">
+        <h3 class="text-xl font-semibold mb-2">Still have questions?</h3>
+        <p class="text-white/60 mb-6">Our support team is here to help</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="mailto:support@scoremarkt.com" class="btn-primary">
+            Contact Support
+          </a>
+          <a href="https://discord.gg/scoremarkt" target="_blank" class="btn-secondary">
+            Join Discord
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

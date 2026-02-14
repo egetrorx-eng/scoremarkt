@@ -1,0 +1,141 @@
+---
+/**
+ * Support Page - ScoreMarkt
+ * ═══════════════════════════════════════════════════════════════
+ * Contact support and help resources.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/astro/Header.astro';
+import Footer from '@/components/astro/Footer.astro';
+
+const helpCategories = [
+  {
+    title: 'Getting Started',
+    description: 'New to ScoreMarkt? Learn the basics.',
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    link: '/how-it-works',
+  },
+  {
+    title: 'Trading Help',
+    description: 'How to buy, sell, and manage positions.',
+    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    link: '/faq#trading',
+  },
+  {
+    title: 'Wallet & Deposits',
+    description: 'Funding your account and withdrawals.',
+    icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',
+    link: '/faq#deposits-withdrawals',
+  },
+  {
+    title: 'FAQ',
+    description: 'Find answers to common questions.',
+    icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    link: '/faq',
+  },
+];
+
+const contactMethods = [
+  {
+    name: 'Discord',
+    description: 'Join our community for real-time help',
+    href: 'https://discord.gg/scoremarkt',
+    icon: 'M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286z',
+  },
+  {
+    name: 'Twitter',
+    description: 'Follow for updates and announcements',
+    href: 'https://twitter.com/scoremarkt',
+    icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    name: 'Email',
+    description: 'For account and technical issues',
+    href: 'mailto:support@scoremarkt.com',
+    icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  },
+];
+---
+
+<BaseLayout 
+  title="Support" 
+  description="Get help with ScoreMarkt - trading, wallet, deposits, and more."
+>
+  <Header />
+
+  <main class="min-h-screen py-12 md:py-20">
+    <div class="container-wide">
+      {/* Header */}
+      <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">How can we help?</h1>
+        <p class="text-lg text-white/60 max-w-xl mx-auto">
+          Find answers, get support, and connect with our community.
+        </p>
+      </div>
+
+      {/* Search */}
+      <div class="max-w-xl mx-auto mb-16">
+        <div class="relative">
+          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search for help..."
+            class="input-lg pl-12"
+          />
+        </div>
+      </div>
+
+      {/* Help Categories */}
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        {helpCategories.map(cat => (
+          <a href={cat.link} class="card-hover text-center py-8">
+            <div class="w-14 h-14 rounded-xl bg-lime-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg class="w-7 h-7 text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={cat.icon} />
+              </svg>
+            </div>
+            <h3 class="font-semibold mb-2">{cat.title}</h3>
+            <p class="text-sm text-white/50">{cat.description}</p>
+          </a>
+        ))}
+      </div>
+
+      {/* Contact Section */}
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-display font-bold mb-8 text-center">Contact Us</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          {contactMethods.map(method => (
+            <a 
+              href={method.href}
+              target={method.href.startsWith('http') ? '_blank' : undefined}
+              rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              class="card-hover text-center py-8"
+            >
+              <div class="w-12 h-12 rounded-xl bg-midnight-600 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-white/70" fill="currentColor" viewBox="0 0 24 24">
+                  <path d={method.icon} />
+                </svg>
+              </div>
+              <h3 class="font-semibold mb-1">{method.name}</h3>
+              <p class="text-sm text-white/50">{method.description}</p>
+            </a>
+          ))}
+        </div>
+
+        {/* Response Time */}
+        <div class="text-center mt-12 p-6 rounded-xl bg-midnight-800/50 border border-midnight-600">
+          <p class="text-white/60">
+            <strong class="text-white">Response times:</strong>{' '}
+            Discord: Usually within hours • Email: 1-2 business days
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
