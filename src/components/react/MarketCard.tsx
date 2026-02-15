@@ -42,13 +42,10 @@ export default function MarketCard({ market, variant = 'default' }: MarketCardPr
         <a
             href={`/market/${market.id}`}
             className={`
-        group block relative overflow-hidden rounded-2xl border border-white/10 bg-midnight-800/40 backdrop-blur-md transition-all duration-300 hover:bg-midnight-700/60 hover:border-lime-500/30 hover:shadow-glow/20 hover:-translate-y-1
+        group block card-hover text-left bg-midnight-800/40 backdrop-blur-md
         ${variant === 'featured' ? 'shadow-glow-sm border-lime-500/20' : ''}
       `}
         >
-            {/* Glossy Overlay effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
             <div className="p-5 relative z-10">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-4">
@@ -65,13 +62,8 @@ export default function MarketCard({ market, variant = 'default' }: MarketCardPr
                                     New
                                 </span>
                             )}
-                            {market.isFeatured && !market.isNew && (
-                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold/10 text-gold border border-gold/20 shadow-[0_0_10px_rgba(255,184,0,0.1)]">
-                                    Featured
-                                </span>
-                            )}
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-lime-500 text-midnight-900 shadow-glow-sm">
-                                {65 + (market.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 30)}% Alpha
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-lime-500/10 text-lime-400 border border-lime-500/20">
+                                {85 + (market.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 12)}% Alpha
                             </span>
                         </div>
 

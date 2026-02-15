@@ -67,9 +67,12 @@ const currentPath = Astro.url.pathname;
 
       <!-- Right Section: Status Indicator + Wallet -->
       <div class="hidden md:flex items-center gap-6">
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-midnight-700/50 border border-white/5">
-          <span class="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
-          <span class="text-[9px] font-black uppercase tracking-widest text-white/40">Market Data Live</span>
+        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-midnight-700/50 border border-white/5 hover:border-lime-500/20 transition-all cursor-crosshair group/status">
+          <div class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-lime-500"></span>
+          </div>
+          <span class="text-[9px] font-black uppercase tracking-widest text-white/40 group-hover/status:text-white transition-colors">POLYGON MAINNET LIVE</span>
         </div>
 
         <WalletButton client:load />

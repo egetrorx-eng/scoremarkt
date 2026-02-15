@@ -30,6 +30,27 @@ export default function TradingPanel({ market }: TradingPanelProps) {
     const outcomes = market.outcomes;
     const currentPrice = outcomes[selectedOutcome]?.price || 0;
 
+    // Handle Mirror Trading parameters from URL
+    React.useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const mirrorOutcome = params.get('mirror');
+        const mirrorShares = params.get('shares');
+
+        if (mirrorOutcome) {
+            const outcomeIndex = outcomes.findIndex(o => o.name.toLowerCase() === mirrorOutcome.toLowerCase());
+            if (outcomeIndex > -1) {
+                setSelectedOutcome(outcomeIndex);
+            }
+        }
+
+        if (mirrorShares) {
+            // For Mirror Trading, we populate the amount field. 
+            // If buying, amount is usually USDC. If selling, it's shares.
+            // Based on the 'mirror' logic in TraderIntelligence, we use shares as the amount.
+            setAmount(mirrorShares);
+        }
+    }, [outcomes]);
+
     // Calculate shares and potential payout
     const calculations = useMemo(() => {
         const amountNum = parseFloat(amount) || 0;
@@ -100,7 +121,15 @@ export default function TradingPanel({ market }: TradingPanelProps) {
             {/* Virtual Balance Header */}
             {isConnected && (
                 <div className="flex justify-between items-center mb-6 px-1">
-                    <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Simulation Balance</span>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Simulation Balance</span>
+                        {typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mirror') && (
+                            <div className="flex items-center gap-1.5 mt-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse"></span>
+                                <span className="text-[8px] font-black text-neon-cyan uppercase tracking-widest">Mirror Mode Active</span>
+                            </div>
+                        )}
+                    </div>
                     <span className="text-xs font-mono font-bold text-lime-400 bg-lime-400/10 px-2 py-1 rounded-lg">
                         ${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC
                     </span>

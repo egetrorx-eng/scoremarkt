@@ -105,6 +105,18 @@ const visualEditingEnabled =
       <AlphaAlerts client:load markets={monitorMarkets} />
       <OrderExecutor client:load markets={monitorMarkets} />
 
+      <!-- Simulation Mode Indicator -->
+      <div class="fixed bottom-6 left-6 z-[100] flex items-center gap-3 px-4 py-2 rounded-full glass-dark border border-white/10 shadow-elevated pointer-events-none select-none animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-lime-500"></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[9px] font-black text-white uppercase tracking-[0.2em] leading-none">Simulation Active</span>
+          <span class="text-[7px] font-bold text-white/30 uppercase tracking-widest mt-1">Live Market Data Sync</span>
+        </div>
+      </div>
+
       {VisualEditing && <VisualEditing enabled={visualEditingEnabled} />}
     </PrivyProviderWrapper>
   </body>

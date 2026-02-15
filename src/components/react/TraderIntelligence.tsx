@@ -76,9 +76,9 @@ export default function TraderIntelligence({ trader, isOpen, onClose }: TraderIn
 
                                         <button
                                             onClick={() => {
-                                                window.location.href = `/market/${conv.marketId}?mirror=${conv.outcome}&shares=${Math.ceil(conv.shares * 0.1)}`;
+                                                window.location.href = `/market/${conv.marketId}?mirror=${conv.outcome.toLowerCase()}&shares=${Math.ceil(conv.shares * 0.1)}`;
                                             }}
-                                            className="px-4 py-2 rounded-xl bg-lime-500 text-midnight-900 text-[10px] font-black uppercase tracking-widest hover:shadow-glow transition-all"
+                                            className="px-4 py-2 rounded-xl bg-lime-500 text-midnight-900 text-[10px] font-black uppercase tracking-widest hover:shadow-glow hover:bg-neon-cyan transition-all"
                                         >
                                             Mirror Alpha
                                         </button>
