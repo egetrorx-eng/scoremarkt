@@ -26,7 +26,7 @@ export default {
 
   // GitHub configuration
   github: {
-    username: '',
+    username: 'egetrorx-eng',
     repoName: 'scoremarkt',
     isPrivate: true,
   },
