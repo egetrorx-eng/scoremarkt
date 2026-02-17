@@ -2,16 +2,8 @@
   command = "npm run build"
   publish = "dist"
 
-[functions]
-  directory = "netlify/functions"
-
-# Environment variables (set in Netlify dashboard)
-# SANITY_PROJECT_ID
-# SANITY_DATASET
-# SANITY_API_TOKEN
-# SUPABASE_URL
-# SUPABASE_ANON_KEY
-# RESEND_API_KEY
+[build.environment]
+  NODE_VERSION = "20"
 
 # Security headers
 [[headers]]
@@ -21,4 +13,3 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-
