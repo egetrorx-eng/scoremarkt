@@ -4,7 +4,7 @@ import { useClobWebSocket } from '../../lib/hooks/useClobWebSocket';
 import { usePortfolioStore } from '../../lib/hooks/usePortfolioStore';
 import type { MarketCardData } from '../../lib/polymarket/types';
 
-import { usePrivy } from '@privy-io/react-auth';
+import { useSafePrivy } from './PrivyProvider';
 import { tradeAlerts } from '../../lib/services/tradeAlerts';
 
 interface OrderExecutorProps {
@@ -12,7 +12,7 @@ interface OrderExecutorProps {
 }
 
 export default function OrderExecutor({ markets }: OrderExecutorProps) {
-    const { user } = usePrivy();
+    const { user } = useSafePrivy();
     const { limitOrders, fulfillLimitOrder } = usePortfolioStore();
     const assetIds = markets.map(m => m.clobTokenIds?.[0]).filter((id): id is string => !!id);
     const { ticker } = useClobWebSocket(assetIds);

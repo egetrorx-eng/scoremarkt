@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useSafePrivy } from '../../components/react/PrivyProvider';
 
 export interface SimulatedPosition {
     id: string;
@@ -62,7 +62,7 @@ export interface HistoryPoint {
 }
 
 export function usePortfolioStore() {
-    const { user, authenticated, ready: privyReady } = usePrivy();
+    const { user, authenticated, ready: privyReady } = useSafePrivy();
 
     // Dynamic storage keys based on user ID
     const STORAGE_KEYS = useMemo(() => {
