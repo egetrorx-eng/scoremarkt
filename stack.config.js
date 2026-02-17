@@ -10,7 +10,7 @@ export default {
 
   // Module toggles
   modules: {
-    sanity: true,      // CMS for match previews and content
+    sanity: false,     // CMS disabled until env vars are configured
     supabase: true,    // Backend for user profiles and tracking
     resend: true,      // Email notifications
     netlify: true,     // Hosting
