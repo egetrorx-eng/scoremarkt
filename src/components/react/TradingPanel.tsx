@@ -4,8 +4,8 @@
  * Trading interface for placing orders on a market.
  */
 
-import React, { useState, useMemo } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useState, useMemo, useEffect } from 'react';
+import { useSafePrivy } from './PrivyProvider';
 import type { MarketCardData } from '../../lib/polymarket/types';
 import { usePortfolioStore } from '../../lib/hooks/usePortfolioStore';
 
@@ -17,7 +17,7 @@ type OrderSide = 'BUY' | 'SELL';
 type OrderType = 'MARKET' | 'LIMIT';
 
 export default function TradingPanel({ market }: TradingPanelProps) {
-    const { authenticated: isConnected, login: handleConnect } = usePrivy();
+    const { authenticated: isConnected, login: handleConnect } = useSafePrivy();
     const { balance, executeTrade, addLimitOrder, ready: storeReady } = usePortfolioStore();
     const [side, setSide] = useState<OrderSide>('BUY');
     const [orderType, setOrderType] = useState<OrderType>('MARKET');
@@ -31,7 +31,7 @@ export default function TradingPanel({ market }: TradingPanelProps) {
     const currentPrice = outcomes[selectedOutcome]?.price || 0;
 
     // Handle Mirror Trading parameters from URL
-    React.useEffect(() => {
+    useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const mirrorOutcome = params.get('mirror');
         const mirrorShares = params.get('shares');

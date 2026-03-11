@@ -5,8 +5,8 @@
  * data fetching, and layouts.
  */
 
-import React, { useEffect, useState } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useEffect, useState } from 'react';
+import { useSafePrivy } from './PrivyProvider';
 import PortfolioSummary from './PortfolioSummary';
 import PositionsTable from './PositionsTable';
 import PerformanceChart from './PerformanceChart';
@@ -22,7 +22,7 @@ import { usePortfolioStore } from '@/lib/hooks/usePortfolioStore';
 import { useAchievements } from '@/lib/hooks/useAchievements';
 
 export default function PortfolioDashboard() {
-    const { authenticated, user, login, ready } = usePrivy();
+    const { authenticated, user, login, ready } = useSafePrivy();
     const {
         positions: simPositions,
         trades: simTrades,
@@ -37,20 +37,7 @@ export default function PortfolioDashboard() {
     const [data, setData] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<'active' | 'closed' | 'history' | 'pending' | 'settings'>('active');
 
-    const isPrivyEnabled = !!import.meta.env.PUBLIC_PRIVY_APP_ID &&
-        import.meta.env.PUBLIC_PRIVY_APP_ID !== 'your-privy-app-id';
-
     const address = user?.wallet?.address;
-
-    // Resolve loading state even if Privy doesn't initialize
-    useEffect(() => {
-        if (!isPrivyEnabled) {
-            const timer = setTimeout(() => {
-                setLoading(false);
-            }, 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [isPrivyEnabled]);
 
     useEffect(() => {
         async function loadData() {
@@ -130,7 +117,7 @@ export default function PortfolioDashboard() {
         }
     }, [authenticated, address, ready, storeReady, simPositions, simTrades, simBalance, simHistory, unlockAchievement]);
 
-    if ((isPrivyEnabled && !ready) || loading) {
+    if (!ready || loading) {
         return (
             <div className="flex flex-col items-center justify-center py-20">
                 <div className="w-12 h-12 border-4 border-lime-500/20 border-t-lime-500 rounded-full animate-spin mb-4" />
@@ -139,7 +126,7 @@ export default function PortfolioDashboard() {
         );
     }
 
-    if (isPrivyEnabled && !authenticated) {
+    if (!authenticated) {
         return (
             <div className="card p-12 text-center border-white/5 bg-midnight-800/40 backdrop-blur-md">
                 <div className="w-20 h-20 bg-lime-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-lime-500/20">

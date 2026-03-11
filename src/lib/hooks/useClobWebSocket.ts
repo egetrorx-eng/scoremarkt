@@ -21,11 +21,15 @@ export interface ClobOrderBook {
     timestamp: string;
 }
 
+const MAX_RETRIES = 5;
+
 export function useClobWebSocket(assetIds: string[]) {
     const [ticker, setTicker] = useState<Record<string, ClobTicker>>({});
     const [books, setBooks] = useState<Record<string, ClobOrderBook>>({});
     const [status, setStatus] = useState<'connecting' | 'open' | 'closed'>('closed');
     const wsRef = useRef<WebSocket | null>(null);
+    const retriesRef = useRef(0);
+    const unmountedRef = useRef(false);
 
     const subscribe = useCallback((ids: string[]) => {
         if (wsRef.current?.readyState === WebSocket.OPEN && ids.length > 0) {
@@ -38,57 +42,75 @@ export function useClobWebSocket(assetIds: string[]) {
     }, []);
 
     useEffect(() => {
+        unmountedRef.current = false;
+
         if (!assetIds || assetIds.length === 0) {
             setStatus('closed');
             return;
         }
 
+        let reconnectTimeout: ReturnType<typeof setTimeout>;
+
         const connect = () => {
+            if (unmountedRef.current) return;
             if (wsRef.current?.readyState === WebSocket.CONNECTING || wsRef.current?.readyState === WebSocket.OPEN) return;
 
             setStatus('connecting');
-            const ws = new WebSocket(CLOB_WS_URL);
-            wsRef.current = ws;
 
-            ws.onopen = () => {
-                setStatus('open');
-                subscribe(assetIds);
-            };
+            try {
+                const ws = new WebSocket(CLOB_WS_URL);
+                wsRef.current = ws;
 
-            ws.onmessage = (event) => {
-                try {
-                    const data: WebSocketMessage = JSON.parse(event.data);
+                ws.onopen = () => {
+                    if (unmountedRef.current) { ws.close(); return; }
+                    setStatus('open');
+                    retriesRef.current = 0;
+                    subscribe(assetIds);
+                };
 
-                    if (data.type === 'ticker' && data.asset_id) {
-                        setTicker(prev => ({
-                            ...prev,
-                            [data.asset_id]: data as unknown as ClobTicker
-                        }));
-                    } else if (data.type === 'book' && data.asset_id) {
-                        setBooks(prev => ({
-                            ...prev,
-                            [data.asset_id]: data as unknown as ClobOrderBook
-                        }));
+                ws.onmessage = (event) => {
+                    try {
+                        const data: WebSocketMessage = JSON.parse(event.data);
+
+                        if (data.type === 'ticker' && data.asset_id) {
+                            setTicker(prev => ({
+                                ...prev,
+                                [data.asset_id]: data as unknown as ClobTicker
+                            }));
+                        } else if (data.type === 'book' && data.asset_id) {
+                            setBooks(prev => ({
+                                ...prev,
+                                [data.asset_id]: data as unknown as ClobOrderBook
+                            }));
+                        }
+                    } catch {
+                        // Ignore parsing errors
                     }
-                } catch (err) {
-                    // Ignore parsing errors
-                }
-            };
+                };
 
-            ws.onerror = (err) => {
-                console.error('WS Error:', err);
-            };
+                ws.onerror = () => {
+                    // Silently handle - onclose will fire next
+                };
 
-            ws.onclose = () => {
+                ws.onclose = () => {
+                    if (unmountedRef.current) return;
+                    setStatus('closed');
+                    if (retriesRef.current < MAX_RETRIES) {
+                        const delay = Math.min(3000 * Math.pow(2, retriesRef.current), 30000);
+                        retriesRef.current++;
+                        reconnectTimeout = setTimeout(connect, delay);
+                    }
+                };
+            } catch {
                 setStatus('closed');
-                // Reconnect after 3 seconds
-                setTimeout(connect, 3000);
-            };
+            }
         };
 
         connect();
 
         return () => {
+            unmountedRef.current = true;
+            clearTimeout(reconnectTimeout);
             if (wsRef.current) {
                 wsRef.current.close();
             }

@@ -1,44 +1,77 @@
 /**
  * Polymarket Gamma API Client
  * ═══════════════════════════════════════════════════════════════
- * Market discovery API for fetching prediction markets.
- * Base URL: https://gamma-api.polymarket.com
+ * Fetches real-time football/soccer prediction markets from Polymarket.
+ *
+ * Strategy:
+ * 1. Use /events endpoint with football-related tag filtering
+ * 2. Search for "football" and "soccer" keywords via /events
+ * 3. Also try /markets endpoint with text search
+ * 4. Filter results through football keyword detection
+ * 5. Fall back to mock data when API returns no football results
  */
 
-import type { Market, MarketFilters, MarketCardData } from './types';
-import { transformToCardData } from './types';
+import type { Market, MarketFilters, MarketCardData, GammaEvent } from './types';
+import { transformToCardData, transformEventToCardData, isFootballRelated } from './types';
 
 const GAMMA_API_BASE = 'https://gamma-api.polymarket.com';
 
-// Football/Soccer related tags to filter by
-const FOOTBALL_TAGS = [
-    'football', 'soccer', 'premier-league', 'la-liga', 'bundesliga',
-    'serie-a', 'ligue-1', 'champions-league', 'europa-league',
-    'world-cup', 'euros', 'copa-america', 'fifa', 'uefa'
-];
+// Football/soccer search terms for the Gamma API
+const FOOTBALL_SEARCH_TERMS = ['football', 'soccer', 'premier league', 'champions league', 'la liga', 'bundesliga', 'serie a'];
+
+// Football-related tag slugs known to exist on Polymarket
+const FOOTBALL_TAG_SLUGS = ['soccer', 'football', 'sports'];
 
 /**
- * Fetch markets from Polymarket Gamma API
+ * Fetch events from Polymarket Gamma API /events endpoint
+ */
+async function fetchEvents(params: Record<string, string | number | boolean> = {}): Promise<GammaEvent[]> {
+    const url = new URL(`${GAMMA_API_BASE}/events`);
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, String(value));
+        }
+    });
+
+    try {
+        const response = await fetch(url.toString(), {
+            headers: { 'Accept': 'application/json' },
+        });
+
+        if (!response.ok) {
+            console.warn(`Gamma events API returned ${response.status}`);
+            return [];
+        }
+
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        return [];
+    }
+}
+
+/**
+ * Fetch markets from Polymarket Gamma API /markets endpoint
  */
 async function fetchMarkets(params: Record<string, string | number | boolean> = {}): Promise<Market[]> {
     const url = new URL(`${GAMMA_API_BASE}/markets`);
 
-    // Gamma API parameters
-    if (params.tag) {
-        url.searchParams.set('tag_id', '113'); // Common ID for Football/Soccer
-    }
-
     Object.entries(params).forEach(([key, value]) => {
-        if (key === 'tag') return; // Handled above
-        url.searchParams.set(key, String(value));
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, String(value));
+        }
     });
 
     try {
-        console.log(`Fetching markets: ${url.toString()}`);
-        const response = await fetch(url.toString());
+        const response = await fetch(url.toString(), {
+            headers: { 'Accept': 'application/json' },
+        });
 
         if (!response.ok) {
-            throw new Error(`Gamma API error: ${response.status}`);
+            console.warn(`Gamma markets API returned ${response.status}`);
+            return [];
         }
 
         const data = await response.json();
@@ -50,73 +83,214 @@ async function fetchMarkets(params: Record<string, string | number | boolean> = 
 }
 
 /**
- * Get all football/soccer markets
+ * Fetch football events using multiple strategies
+ */
+async function fetchFootballEvents(options: { limit?: number; offset?: number; closed?: boolean } = {}): Promise<GammaEvent[]> {
+    const { limit = 100, offset = 0, closed = false } = options;
+    const allEvents: GammaEvent[] = [];
+    const seenIds = new Set<string>();
+
+    // Strategy 1: Fetch events with football-related tag slugs
+    for (const tagSlug of FOOTBALL_TAG_SLUGS) {
+        try {
+            const events = await fetchEvents({
+                tag_slug: tagSlug,
+                active: true,
+                closed,
+                limit,
+                offset,
+            });
+            for (const event of events) {
+                if (!seenIds.has(event.id)) {
+                    seenIds.add(event.id);
+                    allEvents.push(event);
+                }
+            }
+        } catch (e) {
+            // Continue with other strategies
+        }
+    }
+
+    // Strategy 2: Search for football keywords using the tag parameter
+    for (const tag of ['Soccer', 'Football']) {
+        try {
+            const events = await fetchEvents({
+                tag,
+                active: true,
+                closed,
+                limit: 50,
+                offset: 0,
+            });
+            for (const event of events) {
+                if (!seenIds.has(event.id)) {
+                    seenIds.add(event.id);
+                    allEvents.push(event);
+                }
+            }
+        } catch (e) {
+            // Continue
+        }
+    }
+
+    // Strategy 3: Broad sports events search to find football within them
+    try {
+        const sportsEvents = await fetchEvents({
+            active: true,
+            closed,
+            limit: 200,
+            offset: 0,
+            order: 'volume',
+            ascending: false,
+        });
+
+        for (const event of sportsEvents) {
+            if (!seenIds.has(event.id)) {
+                const tagTexts = (event.tags || []).map(t => t.slug || t.label);
+                if (isFootballRelated(event.title + ' ' + (event.description || ''), tagTexts)) {
+                    seenIds.add(event.id);
+                    allEvents.push(event);
+                }
+            }
+        }
+    } catch (e) {
+        // Continue
+    }
+
+    return allEvents;
+}
+
+/**
+ * Fetch football markets directly from /markets endpoint
+ */
+async function fetchFootballMarketsDirect(options: { limit?: number; offset?: number; closed?: boolean } = {}): Promise<Market[]> {
+    const { limit = 100, offset = 0, closed = false } = options;
+    const allMarkets: Market[] = [];
+    const seenIds = new Set<string>();
+
+    // Try multiple search terms
+    for (const term of FOOTBALL_SEARCH_TERMS) {
+        try {
+            const markets = await fetchMarkets({
+                search: term,
+                active: true,
+                closed,
+                limit: 50,
+                offset,
+            });
+
+            for (const market of markets) {
+                const id = market.conditionId || market.questionId;
+                if (id && !seenIds.has(id)) {
+                    seenIds.add(id);
+                    allMarkets.push(market);
+                }
+            }
+        } catch (e) {
+            // Continue
+        }
+
+        // Don't exhaust the API
+        if (allMarkets.length >= limit) break;
+    }
+
+    // Filter to only genuinely football-related markets
+    return allMarkets.filter(m =>
+        isFootballRelated(m.question + ' ' + (m.description || ''), m.tags)
+    );
+}
+
+/**
+ * Get all football/soccer markets (primary export)
+ * Combines events-based and markets-based discovery
  */
 export async function getFootballMarkets(options: MarketFilters = {}): Promise<MarketCardData[]> {
     const { limit = 50, offset = 0, status = 'open' } = options;
+    const closed = status === 'closed';
 
-    // Fetch markets with football search or tag
-    // We try multiple approaches to ensure we get data
-    const markets = await fetchMarkets({
-        search: 'football',
-        limit,
-        offset,
-        active: true,
-        closed: status === 'closed',
-    });
+    let allCards: MarketCardData[] = [];
 
-    // If still empty, try 'soccer'
-    let results = markets;
-    if (results.length === 0) {
-        results = await fetchMarkets({
-            search: 'soccer',
-            limit,
-            offset,
-            active: true,
-            closed: status === 'closed',
-        });
+    try {
+        // Get events and extract markets from them
+        const events = await fetchFootballEvents({ limit: 100, offset: 0, closed });
+        for (const event of events) {
+            const cards = transformEventToCardData(event);
+            allCards.push(...cards);
+        }
+    } catch (e) {
+        console.error('Error in events-based fetching:', e);
     }
 
-    // Combine and deduplicate
-    const uniqueMarkets = Array.from(
-        new Map(results.map(m => [m.conditionId, m])).values()
-    );
+    // If we didn't get enough, also try direct markets endpoint
+    if (allCards.length < limit) {
+        try {
+            const directMarkets = await fetchFootballMarketsDirect({ limit: 50, offset: 0, closed });
+            const seenIds = new Set(allCards.map(c => c.id));
+            for (const market of directMarkets) {
+                const id = market.conditionId;
+                if (id && !seenIds.has(id)) {
+                    seenIds.add(id);
+                    allCards.push(transformToCardData(market));
+                }
+            }
+        } catch (e) {
+            console.error('Error in direct markets fetching:', e);
+        }
+    }
 
-    // Filter by additional criteria
-    let filtered = uniqueMarkets;
+    // Deduplicate by id
+    const uniqueMap = new Map<string, MarketCardData>();
+    for (const card of allCards) {
+        if (card.id && !uniqueMap.has(card.id)) {
+            uniqueMap.set(card.id, card);
+        }
+    }
+    let results = Array.from(uniqueMap.values());
 
+    // Filter by search
     if (options.search) {
         const searchLower = options.search.toLowerCase();
-        filtered = filtered.filter(m =>
+        results = results.filter(m =>
             m.question.toLowerCase().includes(searchLower) ||
             m.description?.toLowerCase().includes(searchLower) ||
-            m.tags?.some(t => t.toLowerCase().includes(searchLower))
+            m.tags?.some(t => t.toLowerCase().includes(searchLower)) ||
+            m.teams?.some(t => t.toLowerCase().includes(searchLower))
         );
     }
 
-    if (options.league) {
-        filtered = filtered.filter(m =>
+    // Filter by league
+    if (options.league && options.league !== 'all') {
+        results = results.filter(m =>
+            m.league === options.league ||
             m.tags?.some(t => t.toLowerCase().includes(options.league!.toLowerCase())) ||
-            m.question.toLowerCase().includes(options.league!.toLowerCase())
+            m.question.toLowerCase().includes(options.league!.replace('-', ' ').toLowerCase())
         );
     }
+
+    // Filter by status
+    if (status === 'open') {
+        results = results.filter(m => !m.isClosed);
+    } else if (status === 'closed') {
+        results = results.filter(m => m.isClosed);
+    }
+
+    // Filter out markets with no outcomes
+    results = results.filter(m => m.outcomes && m.outcomes.length > 0);
 
     // Sort
-    filtered = sortMarkets(filtered, options.sort || 'volume');
+    results = sortMarkets(results, options.sort || 'volume');
 
-    // Transform to card data
-    return filtered.map(transformToCardData);
+    // Apply limit/offset
+    return results.slice(offset, offset + limit);
 }
 
 /**
  * Get featured/trending markets
  */
 export async function getFeaturedMarkets(limit = 6): Promise<MarketCardData[]> {
-    const marketsSelected = await getMarkets();
+    const allMarkets = await getMarkets({ limit: 50 });
 
-    // Filter for featured or high volume markets
-    return marketsSelected
-        .filter(m => !m.isClosed)
+    return allMarkets
+        .filter(m => !m.isClosed && m.outcomes.length > 0)
         .sort((a, b) => parseFloat(b.volume) - parseFloat(a.volume))
         .slice(0, limit);
 }
@@ -125,14 +299,15 @@ export async function getFeaturedMarkets(limit = 6): Promise<MarketCardData[]> {
  * Get live/today markets
  */
 export async function getLiveMarkets(): Promise<MarketCardData[]> {
-    const marketsLive = await getMarkets({ limit: 100 });
+    const allMarkets = await getMarkets({ limit: 100 });
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    return marketsLive.filter(m => {
+    return allMarkets.filter(m => {
+        if (!m.endDate || m.isClosed) return false;
         const endDate = new Date(m.endDate);
-        return endDate >= now && endDate <= tomorrow && !m.isClosed;
+        return endDate >= now && endDate <= tomorrow;
     });
 }
 
@@ -147,11 +322,13 @@ export async function getMarketById(conditionId: string): Promise<MarketCardData
     }
 
     try {
-        // For Gamma, searching by condition_id is often more reliable
+        // Try fetching by condition_id from the markets endpoint
         const url = new URL(`${GAMMA_API_BASE}/markets`);
         url.searchParams.set('condition_id', conditionId);
 
-        const response = await fetch(url.toString());
+        const response = await fetch(url.toString(), {
+            headers: { 'Accept': 'application/json' },
+        });
 
         if (!response.ok) {
             throw new Error(`Market not found: ${conditionId}`);
@@ -164,6 +341,25 @@ export async function getMarketById(conditionId: string): Promise<MarketCardData
         return transformToCardData(market);
     } catch (error) {
         console.error('Error fetching market:', error);
+
+        // Also try the slug/id approach via events
+        try {
+            const url = new URL(`${GAMMA_API_BASE}/events`);
+            url.searchParams.set('id', conditionId);
+            const response = await fetch(url.toString(), {
+                headers: { 'Accept': 'application/json' },
+            });
+            if (response.ok) {
+                const events = await response.json();
+                if (Array.isArray(events) && events.length > 0) {
+                    const cards = transformEventToCardData(events[0]);
+                    if (cards.length > 0) return cards[0];
+                }
+            }
+        } catch (e) {
+            // Fall through to null
+        }
+
         return null;
     }
 }
@@ -186,7 +382,7 @@ export async function getMarketsByLeague(league: string): Promise<MarketCardData
 /**
  * Sort markets by criteria
  */
-function sortMarkets(markets: Market[], sortBy: string): Market[] {
+function sortMarkets(markets: MarketCardData[], sortBy: string): MarketCardData[] {
     const sorted = [...markets];
 
     switch (sortBy) {
@@ -195,9 +391,15 @@ function sortMarkets(markets: Market[], sortBy: string): Market[] {
         case 'liquidity':
             return sorted.sort((a, b) => parseFloat(b.liquidity) - parseFloat(a.liquidity));
         case 'newest':
-            return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            return sorted.sort((a, b) => {
+                if (!a.endDate || !b.endDate) return 0;
+                return new Date(b.endDate).getTime() - new Date(a.endDate).getTime();
+            });
         case 'ending':
-            return sorted.sort((a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime());
+            return sorted.sort((a, b) => {
+                if (!a.endDate || !b.endDate) return 0;
+                return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+            });
         default:
             return sorted;
     }
@@ -219,11 +421,10 @@ export function extractLeagues(markets: MarketCardData[]): string[] {
 }
 
 /**
- * Get user positions (mock for now, preparing for real integration)
+ * Get user positions (mock for now)
  */
 export async function getUserPositions(address: string) {
     console.log(`Fetching positions for ${address}`);
-    // In a real implementation, we would query a DB or the Polymarket subgraph
     return [
         {
             id: '1',
@@ -319,7 +520,7 @@ export async function getUserClosedPositions(address: string) {
     ];
 }
 
-// Mock data for development/demo purposes
+// Mock data for development/demo
 export const MOCK_MARKETS: MarketCardData[] = [
     {
         id: 'mock-1',
@@ -334,7 +535,7 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '150000',
         endDate: '2025-05-25T22:00:00Z',
         endDateFormatted: 'May 25',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'premier-league', 'manchester-city'],
         isClosed: false,
         isNew: false,
@@ -357,7 +558,7 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '280000',
         endDate: '2025-05-31T21:00:00Z',
         endDateFormatted: 'May 31',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'champions-league', 'real-madrid'],
         isClosed: false,
         isNew: false,
@@ -381,7 +582,7 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '75000',
         endDate: '2025-01-18T15:00:00Z',
         endDateFormatted: 'Tomorrow',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'premier-league', 'liverpool', 'arsenal'],
         isClosed: false,
         isNew: true,
@@ -404,14 +605,14 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '120000',
         endDate: '2025-05-26T20:00:00Z',
         endDateFormatted: 'May 26',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'la-liga', 'barcelona'],
         isClosed: false,
         isNew: false,
         isFeatured: false,
         league: 'la-liga',
         teams: ['barcelona'],
-        clobTokenIds: ['barca-id'],
+        clobTokenIds: [],
         outcomePrices: ['0.55', '0.45']
     },
     {
@@ -427,14 +628,14 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '85000',
         endDate: '2025-05-17T17:30:00Z',
         endDateFormatted: 'May 17',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'bundesliga', 'bayern-munich'],
         isClosed: false,
         isNew: false,
         isFeatured: false,
         league: 'bundesliga',
         teams: ['bayern-munich'],
-        clobTokenIds: ['bayern-id'],
+        clobTokenIds: [],
         outcomePrices: ['0.72', '0.28']
     },
     {
@@ -450,14 +651,14 @@ export const MOCK_MARKETS: MarketCardData[] = [
         liquidity: '65000',
         endDate: '2025-05-25T18:00:00Z',
         endDateFormatted: 'May 25',
-        image: 'https://polymarket.com/images/market.png',
+        image: '',
         tags: ['football', 'serie-a', 'inter-milan'],
         isClosed: false,
         isNew: false,
         isFeatured: false,
         league: 'serie-a',
         teams: ['inter-milan'],
-        clobTokenIds: ['inter-id'],
+        clobTokenIds: [],
         outcomePrices: ['0.58', '0.42']
     },
 ];
@@ -469,11 +670,9 @@ export async function getMarkets(options: MarketFilters = {}): Promise<MarketCar
     try {
         const markets = await getFootballMarkets(options);
 
-        // If no markets found, return mock data for development
         if (markets.length === 0) {
-            console.log('No markets from API, using mock data');
+            console.log('No football markets from API, using mock data');
 
-            // Apply similar filters to mock data to maintain UI consistency
             let filteredMocks = [...MOCK_MARKETS];
 
             if (options.league && options.league !== 'all') {

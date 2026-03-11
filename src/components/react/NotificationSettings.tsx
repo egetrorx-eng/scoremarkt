@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useState, useEffect } from 'react';
+import { useSafePrivy } from './PrivyProvider';
 
 interface NotificationPreferences {
     limitOrderFulfillment: boolean;
@@ -14,7 +14,7 @@ const DEFAULT_PREFS: NotificationPreferences = {
 };
 
 export default function NotificationSettings() {
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated } = useSafePrivy();
     const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFS);
     const [loading, setLoading] = useState(true);
 

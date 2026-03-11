@@ -4,28 +4,15 @@
  * Wallet connection button with dropdown menu.
  */
 
-import React, { useState } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useState } from 'react';
+import { useSafePrivy } from './PrivyProvider';
 
 interface WalletButtonProps {
     className?: string;
 }
 
 export default function WalletButton({ className = '' }: WalletButtonProps) {
-    const appId = import.meta.env.PUBLIC_PRIVY_APP_ID;
-    const isPrivyConfigured = appId && appId !== 'your-privy-app-id' && !appId.includes('...');
-
-    // We still have to call the hook, but we can handle the case where it might be empty or invalid
-    // However, Privy hook WILL throw if the Provider is missing.
-    // So we'll only call it if we rendered the Provider.
-    let privy;
-    try {
-        privy = usePrivy();
-    } catch (e) {
-        privy = { authenticated: false, login: () => alert('Privy App ID not configured'), logout: () => { }, user: null };
-    }
-
-    const { login, logout, authenticated, user } = privy;
+    const { login, logout, authenticated, user } = useSafePrivy();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Get display address from Privy user

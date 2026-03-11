@@ -1,4 +1,4 @@
-import { useLogin } from '@privy-io/react-auth';
+import { useSafeLogin } from './PrivyProvider';
 
 interface LoginButtonProps {
     className?: string;
@@ -6,7 +6,7 @@ interface LoginButtonProps {
 }
 
 export default function LoginButton({ className, children }: LoginButtonProps) {
-    const { login } = useLogin({
+    const { login } = useSafeLogin({
         onComplete: ({ user, isNewUser, wasAlreadyAuthenticated }) => {
             console.log('Login complete', { user, isNewUser, wasAlreadyAuthenticated });
             window.location.href = '/portfolio';
